@@ -17,16 +17,28 @@
 
 #let palettes = (
   paper: (
-    paper: rgb("#fbf7f0"), paper-warm: rgb("#f4eadc"), rule: rgb("#e3d5c1"),
-    ink: rgb("#2e221b"), ink-soft: rgb("#6c5849"),
-    rust: rgb("#a63f29"), amber: rgb("#8f5e0e"), moss: rgb("#55602e"),
-    coral: rgb("#e9664e"), peach: rgb("#f8c597"),
+    paper: rgb("#fbf7f0"),
+    paper-warm: rgb("#f4eadc"),
+    rule: rgb("#e3d5c1"),
+    ink: rgb("#2e221b"),
+    ink-soft: rgb("#6c5849"),
+    rust: rgb("#a63f29"),
+    amber: rgb("#8f5e0e"),
+    moss: rgb("#55602e"),
+    coral: rgb("#e9664e"),
+    peach: rgb("#f8c597"),
   ),
   lantern: (
-    paper: rgb("#1c1612"), paper-warm: rgb("#282019"), rule: rgb("#3b3029"),
-    ink: rgb("#f0e6d8"), ink-soft: rgb("#b9a695"),
-    rust: rgb("#f08b6e"), amber: rgb("#deac55"), moss: rgb("#adba7a"),
-    coral: rgb("#e8735b"), peach: rgb("#6e4632"),
+    paper: rgb("#1c1612"),
+    paper-warm: rgb("#282019"),
+    rule: rgb("#3b3029"),
+    ink: rgb("#f0e6d8"),
+    ink-soft: rgb("#b9a695"),
+    rust: rgb("#f08b6e"),
+    amber: rgb("#deac55"),
+    moss: rgb("#adba7a"),
+    coral: rgb("#e8735b"),
+    peach: rgb("#6e4632"),
   ),
 )
 
@@ -36,10 +48,10 @@
 // ── Type ─────────────────────────────────────────────────────────────────────
 
 #let fonts = (
-  display: ("Fraunces Soft Display", "Libertinus Serif"),   // chapter & section titles
-  label: ("Fraunces Soft Text", "Libertinus Serif"),        // labels, subsections, folios
-  text: ("Newsreader Text", "Libertinus Serif"),            // everything you read
-  mono: ("DM Mono", "DejaVu Sans Mono"),                    // code
+  display: ("Fraunces Soft Display", "Libertinus Serif"), // chapter & section titles
+  label: ("Fraunces Soft Text", "Libertinus Serif"), // labels, subsections, folios
+  text: ("Newsreader Text", "Libertinus Serif"), // everything you read
+  mono: ("DM Mono", "DejaVu Sans Mono"), // code
   math: ("STIX Two Math", "New Computer Modern Math"),
 )
 
@@ -49,20 +61,56 @@
 
 // Print sizes are the design system's screen px × 0.583. The A4 edition is a
 // step larger, since a page on a screen is read smaller than paper in the hand.
-#let type-size = if _print {(
-  chapter-numeral: 64pt, chapter-title: 30pt, section: 17.5pt, subsection: 12.25pt,
-  label: 8.75pt, lede: 13pt, body: 10.5pt, caption: 8.75pt, note: 8.25pt, code: 8.75pt,
-)} else {(
-  chapter-numeral: 72pt, chapter-title: 33pt, section: 19pt, subsection: 13.5pt,
-  label: 9.5pt, lede: 14pt, body: 11.5pt, caption: 9.5pt, note: 9pt, code: 9.5pt,
-)}
+#let type-size = if _print {
+  (
+    chapter-numeral: 64pt,
+    chapter-title: 30pt,
+    section: 17.5pt,
+    subsection: 12.25pt,
+    label: 8.75pt,
+    lede: 13pt,
+    body: 10.5pt,
+    caption: 8.75pt,
+    note: 8.25pt,
+    code: 8.75pt,
+  )
+} else {
+  (
+    chapter-numeral: 72pt,
+    chapter-title: 33pt,
+    section: 19pt,
+    subsection: 13.5pt,
+    label: 9.5pt,
+    lede: 14pt,
+    body: 11.5pt,
+    caption: 9.5pt,
+    note: 9pt,
+    code: 9.5pt,
+  )
+}
 
 // Baseline-to-baseline distances (text boxes are exactly 1em tall, see book()).
-#let line-height = if _print {(
-  chapter-title: 34pt, section: 22pt, body: 17.5pt, lede: 20pt, caption: 13.5pt, note: 12.25pt, code: 14pt,
-)} else {(
-  chapter-title: 37pt, section: 24pt, body: 19pt, lede: 22pt, caption: 14.5pt, note: 13.5pt, code: 15pt,
-)}
+#let line-height = if _print {
+  (
+    chapter-title: 34pt,
+    section: 22pt,
+    body: 17.5pt,
+    lede: 20pt,
+    caption: 13.5pt,
+    note: 12.25pt,
+    code: 14pt,
+  )
+} else {
+  (
+    chapter-title: 37pt,
+    section: 24pt,
+    body: 19pt,
+    lede: 22pt,
+    caption: 14.5pt,
+    note: 13.5pt,
+    code: 15pt,
+  )
+}
 
 // ── Space, radius, page grid ─────────────────────────────────────────────────
 
@@ -76,15 +124,31 @@
 // Text column ≈ 66 characters in both; the margin column holds notes.
 //   print: crown quarto, 189 × 246 mm, margin column on the outer side
 //   pdf:   A4, one-sided, margin column always on the right
-#let page-grid = if _print {(
-  width: 189mm, height: 246mm,
-  inside: 18mm, top: 22mm, bottom: 24mm,
-  measure: 112mm, gutter: 6mm, margin-column: 40mm, edge: 13mm,
-)} else {(
-  width: 210mm, height: 297mm,
-  inside: 22mm, top: 24mm, bottom: 26mm,
-  measure: 125mm, gutter: 7mm, margin-column: 44mm, edge: 12mm,
-)}
+#let page-grid = if _print {
+  (
+    width: 189mm,
+    height: 246mm,
+    inside: 18mm,
+    top: 22mm,
+    bottom: 24mm,
+    measure: 112mm,
+    gutter: 6mm,
+    margin-column: 40mm,
+    edge: 13mm,
+  )
+} else {
+  (
+    width: 210mm,
+    height: 297mm,
+    inside: 22mm,
+    top: 24mm,
+    bottom: 26mm,
+    measure: 125mm,
+    gutter: 7mm,
+    margin-column: 44mm,
+    edge: 12mm,
+  )
+}
 #let outside = page-grid.gutter + page-grid.margin-column + page-grid.edge
 
 // ── Edition switches ─────────────────────────────────────────────────────────
@@ -106,17 +170,24 @@
 #let _lead(size, height) = height - size   // par leading for a 1em-tall line box
 
 #let label-text(fill: palette.ink-soft, body) = text(
-  font: fonts.label, weight: 600, size: type-size.label, fill: fill, body,
+  font: fonts.label,
+  weight: 600,
+  size: type-size.label,
+  fill: fill,
+  body,
 )
 
 #let _sucker-paged(color, d, filled, stroke) = box(
-  width: d, height: d, baseline: 0.05em,
+  width: d,
+  height: d,
+  baseline: 0.05em,
   {
     place(center + horizon, circle(radius: d / 2 - stroke / 2, stroke: stroke + color))
     if filled { place(center + horizon, circle(radius: d * 0.19, fill: color)) }
   },
 )
-#let _sucker-web(filled: true) = _el("span",
+#let _sucker-web(filled: true) = _el(
+  "span",
   class: if filled { "ck-sucker" } else { "ck-sucker ck-sucker--open" },
   attrs: (aria-hidden: "true"),
 )
@@ -132,15 +203,18 @@
 }
 
 /// The first paragraph of a chapter. The site's home page quotes it.
-#let lede(body) = [#metadata(body) <craken-lede>] + context {
-  if _web() { _el("p", class: "lede", body) } else {
-    block(below: spacing.s12, {
-      set text(size: type-size.lede)
-      set par(leading: _lead(type-size.lede, line-height.lede), justify: false)
-      body
-    })
-  }
-}
+#let lede(body) = (
+  [#metadata(body) <craken-lede>]
+    + context {
+      if _web() { _el("p", class: "lede", body) } else {
+        block(below: spacing.s12, {
+          set text(size: type-size.lede)
+          set par(leading: _lead(type-size.lede, line-height.lede), justify: false)
+          body
+        })
+      }
+    }
+)
 
 /// Three suckers: a break inside a section.
 #let sbreak() = context {
@@ -148,9 +222,13 @@
     _el("div", class: "ck-break", attrs: (role: "separator"), _sucker-web() + _sucker-web() + _sucker-web())
   } else {
     let s = _sucker-paged(palette.coral, 6.5pt, true, 0.9pt)
-    block(above: spacing.s12, below: spacing.s12, width: 100%, align(center,
-      stack(dir: ltr, spacing: spacing.s4, s, s, s),
-    ))
+    block(above: spacing.s12, below: spacing.s12, width: 100%, align(center, stack(
+      dir: ltr,
+      spacing: spacing.s4,
+      s,
+      s,
+      s,
+    )))
   }
 }
 
@@ -183,7 +261,7 @@
     [#metadata("question") #label("craken-question-" + str(n))]
     let chapter = counter(heading).get().first()
     let collected = query(<craken-solutions-here>).any(m => m.value.all or m.value.chapter == chapter)
-    if not collected { return _answer-flipped(answer) }   // no solutions() for this chapter
+    if not collected { return _answer-flipped(answer) } // no solutions() for this chapter
     solution-store.update(all => all + ((chapter: chapter, kind: "answer", num: n, body: answer),))
     v(spacing.s4, weak: true)
     set text(size: type-size.caption, fill: palette.ink-soft)
@@ -201,14 +279,22 @@
       _el("p", class: "ck-callout__label label", _sucker-web() + name)
       body
       if answer != none {
-        _el("details", class: "ck-reveal",
-          _el("summary", class: "label")[Answer] + _el("div", class: "ck-reveal__body", answer))
+        _el(
+          "details",
+          class: "ck-reveal",
+          _el("summary", class: "label")[Answer] + _el("div", class: "ck-reveal__body", answer),
+        )
       }
     })
   } else {
     block(
-      width: 100%, above: spacing.s8, below: spacing.s8, inset: spacing.s6,
-      fill: palette.paper-warm, radius: radii.m, breakable: true,
+      width: 100%,
+      above: spacing.s8,
+      below: spacing.s8,
+      inset: spacing.s6,
+      fill: palette.paper-warm,
+      radius: radii.m,
+      breakable: true,
       {
         label-text(fill: color)[#_sucker-paged(color, 6.5pt, true, 0.9pt) #h(spacing.s2) #name]
         v(spacing.s2, weak: true)
@@ -273,14 +359,18 @@
 #let code(body, title: none, lang: none, numbers: false) = context {
   if _web() {
     show raw.line: it => if numbers { _el("span", class: "ck-line", it) } else { it }
-    _el("figure", class: if numbers { "ck-code ck-code--numbered" } else { "ck-code" }, {
-      if title != none or lang != none {
-        _el("figcaption", class: "ck-code__title code", _el("span", title) + _el("span", lang))
-      }
-      _in-code.update(true)
-      body
-      _in-code.update(false)
-    })
+    _el(
+      "figure",
+      class: if numbers { "ck-code ck-code--numbered" } else { "ck-code" },
+      {
+        if title != none or lang != none {
+          _el("figcaption", class: "ck-code__title code", _el("span", title) + _el("span", lang))
+        }
+        _in-code.update(true)
+        body
+        _in-code.update(false)
+      },
+    )
     return
   }
   show raw.line: it => {
@@ -290,29 +380,47 @@
     }
     it
   }
-  block(width: 100%, above: spacing.s8, below: spacing.s8, fill: palette.paper-warm, radius: radii.m, clip: true, breakable: true, {
-    if title != none or lang != none {
-      block(width: 100%, inset: (x: spacing.s6, y: spacing.s2), stroke: (bottom: 0.5pt + palette.rule), spacing: 0pt, sticky: true, {
-        set text(font: fonts.mono, size: 7.5pt, fill: palette.ink-soft)
+  block(
+    width: 100%,
+    above: spacing.s8,
+    below: spacing.s8,
+    fill: palette.paper-warm,
+    radius: radii.m,
+    clip: true,
+    breakable: true,
+    {
+      if title != none or lang != none {
+        block(
+          width: 100%,
+          inset: (x: spacing.s6, y: spacing.s2),
+          stroke: (bottom: 0.5pt + palette.rule),
+          spacing: 0pt,
+          sticky: true,
+          {
+            set text(font: fonts.mono, size: 7.5pt, fill: palette.ink-soft)
+            set align(start)
+            title
+            h(1fr)
+            lang
+          },
+        )
+      }
+      block(width: 100%, inset: (x: spacing.s6, y: spacing.s4), spacing: 0pt, {
         set align(start)
-        title
-        h(1fr)
-        lang
+        _in-code.update(true)
+        body
+        _in-code.update(false)
       })
-    }
-    block(width: 100%, inset: (x: spacing.s6, y: spacing.s4), spacing: 0pt, {
-      set align(start)
-      _in-code.update(true)
-      body
-      _in-code.update(false)
-    })
-  })
+    },
+  )
 }
 
 /// A numbered listing ("Listing 1.2") with a caption: code() inside a figure.
 #let listing(body, caption: none, title: none, lang: none, numbers: false) = figure(
   code(body, title: title, lang: lang, numbers: numbers),
-  kind: raw, supplement: [Listing], caption: caption,
+  kind: raw,
+  supplement: [Listing],
+  caption: caption,
 )
 
 // ── Exercises and solutions ──────────────────────────────────────────────────
@@ -321,11 +429,16 @@
 
 #let pips(n) = context {
   if _web() {
-    _el("span", class: "ck-exercise__difficulty",
+    _el(
+      "span",
+      class: "ck-exercise__difficulty",
       attrs: (role: "img", aria-label: "Difficulty " + str(n) + " of 3"),
-      range(3).map(i => _sucker-web(filled: i < n)).join())
+      range(3).map(i => _sucker-web(filled: i < n)).join(),
+    )
   } else {
-    box(baseline: 0.05em, stack(dir: ltr, spacing: spacing.s1,
+    box(baseline: 0.05em, stack(
+      dir: ltr,
+      spacing: spacing.s1,
       ..range(3).map(i => _sucker-paged(palette.ink-soft, 6pt, i < n, 0.75pt)),
     ))
   }
@@ -334,30 +447,46 @@
 /// A numbered exercise, rated 1–3. Label it to refer to it (@ex:name).
 /// Print: its solution waits for solutions(). Web: it hides under the exercise.
 #let exercise(body, difficulty: 1, solution: none) = figure(
-  kind: "exercise", supplement: [Exercise], outlined: false,
+  kind: "exercise",
+  supplement: [Exercise],
+  outlined: false,
   context {
     let chapter = counter(heading).get().first()
     let num = str(chapter) + "." + str(exercise-counter.get().first())
     if _web() {
       _el("section", class: "ck-exercise", {
-        _el("p", class: "ck-exercise__head",
-          _el("span", class: "ck-exercise__number label")[Exercise #num] + [ ] + pips(difficulty))
+        _el(
+          "p",
+          class: "ck-exercise__head",
+          _el("span", class: "ck-exercise__number label")[Exercise #num] + [ ] + pips(difficulty),
+        )
         _el("div", class: "ck-exercise__body", body)
         if solution != none {
-          _el("details", class: "ck-reveal ck-solution",
-            _el("summary", class: "label")[Solution] + _el("div", class: "ck-reveal__body", solution))
+          _el(
+            "details",
+            class: "ck-reveal ck-solution",
+            _el("summary", class: "label")[Solution] + _el("div", class: "ck-reveal__body", solution),
+          )
         }
       })
       return
     }
-    block(width: 100%, above: 0pt, below: 0pt, inset: (y: spacing.s6), stroke: (top: 0.5pt + palette.rule), breakable: true, {
-      set align(start)
-      label-text(fill: palette.rust)[Exercise #num]
-      h(spacing.s4)
-      pips(difficulty)
-      v(spacing.s2, weak: true)
-      body
-    })
+    block(
+      width: 100%,
+      above: 0pt,
+      below: 0pt,
+      inset: (y: spacing.s6),
+      stroke: (top: 0.5pt + palette.rule),
+      breakable: true,
+      {
+        set align(start)
+        label-text(fill: palette.rust)[Exercise #num]
+        h(spacing.s4)
+        pips(difficulty)
+        v(spacing.s2, weak: true)
+        body
+      },
+    )
     if solution != none {
       solution-store.update(all => all + ((chapter: chapter, num: num, body: solution),))
     }
@@ -383,13 +512,13 @@
     if s.at("kind", default: "exercise") == "answer" {
       let back = label("craken-question-" + str(s.num))
       [#block(above: spacing.s6, below: spacing.s6, breakable: true, {
-        label-text(fill: palette.rust)[Answer]
-        h(spacing.s2)
-        let page = if query(back).len() > 0 { str(locate(back).page()) } else { "…" }
-        text(size: type-size.caption, fill: palette.ink-soft, link(back)[to the question on page #page])
-        v(spacing.s2, weak: true)
-        s.body
-      }) #label("craken-answer-" + str(s.num))]
+          label-text(fill: palette.rust)[Answer]
+          h(spacing.s2)
+          let page = if query(back).len() > 0 { str(locate(back).page()) } else { "…" }
+          text(size: type-size.caption, fill: palette.ink-soft, link(back)[to the question on page #page])
+          v(spacing.s2, weak: true)
+          s.body
+        }) #label("craken-answer-" + str(s.num))]
     } else {
       block(above: spacing.s6, below: spacing.s6, breakable: true, {
         label-text(fill: palette.moss)[Solution #s.num]
@@ -411,18 +540,22 @@
 
 #let _topbar(wide: false) = context {
   let meta = _meta.get()
-  _el("header", class: if wide { "ck-topbar ck-topbar--wide" } else { "ck-topbar" }, {
-    _el("a", class: "ck-topbar__title label", attrs: (href: "index.html"), {
-      if meta.at("logo-src", default: none) != none {
-        _el("img", attrs: (src: meta.logo-src, alt: ""))
+  _el(
+    "header",
+    class: if wide { "ck-topbar ck-topbar--wide" } else { "ck-topbar" },
+    {
+      _el("a", class: "ck-topbar__title label", attrs: (href: "index.html"), {
+        if meta.at("logo-src", default: none) != none {
+          _el("img", attrs: (src: meta.logo-src, alt: ""))
+        }
+        meta.at("title", default: [])
+      })
+      if meta.at("pdf", default: none) != none {
+        _el("nav", class: "ck-topbar__nav label", _el("a", attrs: (href: meta.pdf))[PDF])
       }
-      meta.at("title", default: [])
-    })
-    if meta.at("pdf", default: none) != none {
-      _el("nav", class: "ck-topbar__nav label", _el("a", attrs: (href: meta.pdf))[PDF])
-    }
-    _el("button", class: "ck-theme-toggle label", attrs: (type: "button"), _sucker-web() + _el("span")[Lantern])
-  })
+      _el("button", class: "ck-theme-toggle label", attrs: (type: "button"), _sucker-web() + _el("span")[Lantern])
+    },
+  )
 }
 
 #let _chapter-label(ch) = {
@@ -435,12 +568,17 @@
   _el("nav", class: "ck-pager", attrs: (aria-label: "Chapters"), {
     if k >= 2 {
       let prev = chapters.at(k - 2)
-      link(prev.location(), _el("span", class: "label")[Previous chapter] + _el("span", class: "ck-pager__title", prev.body))
+      link(
+        prev.location(),
+        _el("span", class: "label")[Previous chapter] + _el("span", class: "ck-pager__title", prev.body),
+      )
     }
     if k < chapters.len() {
       let next = chapters.at(k)
-      _el("span", class: "ck-pager__next", link(next.location(),
-        _el("span", class: "label")[Next chapter] + _el("span", class: "ck-pager__title", next.body)))
+      _el("span", class: "ck-pager__next", link(
+        next.location(),
+        _el("span", class: "label")[Next chapter] + _el("span", class: "ck-pager__title", next.body),
+      ))
     }
   })
 }
@@ -459,7 +597,11 @@
     A #_mark("question", [Question]) asks you to stop and answer before you read on; the answer waits behind a toggle.
     #_mark("try", [Try this]) is something small to do with your hands: run it, draw it, change one thing.
     Each chapter ends with exercises, rated from
-    #_el("span", class: "ck-exercise__difficulty", _sucker-web() + _sucker-web(filled: false) + _sucker-web(filled: false))
+    #_el(
+      "span",
+      class: "ck-exercise__difficulty",
+      _sucker-web() + _sucker-web(filled: false) + _sucker-web(filled: false),
+    )
     to #_el("span", class: "ck-exercise__difficulty", _sucker-web() + _sucker-web() + _sucker-web()),
     and every solution hides under its exercise.
   ]
@@ -479,7 +621,10 @@
     _el("div", class: "ck-spread__verso", {
       if meta.logo-src != none {
         _el("figure", class: "ck-frontis", {
-          _el("div", class: "ck-frontis__plate", _el("img", attrs: (src: meta.logo-src, alt: "Captain Craken, half pirate and half kraken")))
+          _el("div", class: "ck-frontis__plate", _el("img", attrs: (
+            src: meta.logo-src,
+            alt: "Captain Craken, half pirate and half kraken",
+          )))
           if meta.frontispiece != none { _el("figcaption", class: "ck-frontis__caption caption", meta.frontispiece) }
         })
       }
@@ -527,17 +672,22 @@
           let exercises = between(figure.where(kind: "exercise"), i).len()
           let ledes = between(selector(<craken-lede>), i)
           _el("li", class: "ck-contents__chapter", {
-            _el("span", class: "ck-contents__num",
-              if ch.numbering != none { str(counter(heading).at(ch.location()).first()) } else { "" })
+            _el("span", class: "ck-contents__num", if ch.numbering != none {
+              str(counter(heading).at(ch.location()).first())
+            } else { "" })
             _el("div", {
               _el("h3", class: "ck-contents__name", link(ch.location(), ch.body))
               if ledes.len() > 0 { _el("p", class: "ck-contents__lede", ledes.first().value) }
               if sections.len() > 0 or exercises > 0 {
                 _el("p", class: "ck-contents__sections", {
-                  sections.map(s => link(s.location(), {
-                    if s.numbering != none { _el("span", class: "ck-section-num", numbering("1.1", ..counter(heading).at(s.location()))) }
-                    s.body
-                  })).join(_el("span", class: "ck-contents__dot", " · "))
+                  sections
+                    .map(s => link(s.location(), {
+                      if s.numbering != none {
+                        _el("span", class: "ck-section-num", numbering("1.1", ..counter(heading).at(s.location())))
+                      }
+                      s.body
+                    }))
+                    .join(_el("span", class: "ck-contents__dot", " · "))
                   if exercises > 0 {
                     if sections.len() > 0 { _el("span", class: "ck-contents__dot", " · ") }
                     _el("span", class: "ck-contents__count", _plural(exercises, "exercise", "exercises"))
@@ -554,17 +704,21 @@
 
 #let _footer(wide: false) = context {
   let meta = _meta.get()
-  _el("footer", class: if wide { "ck-footer ck-footer--wide" } else { "ck-footer" }, {
-    _el("p", {
-      [© #datetime.today().year()]
-      if meta.at("author", default: none) != none [ #meta.author]
-      if meta.at("homepage", default: none) != none {
-        [ · ]
-        _el("a", attrs: (href: meta.homepage), meta.homepage.trim("https://", at: start).trim("/", at: end))
-      }
-    })
-    _el("p", class: "ck-footer__colophon")[Set in Fraunces, Newsreader and DM Mono. Made with Typst.]
-  })
+  _el(
+    "footer",
+    class: if wide { "ck-footer ck-footer--wide" } else { "ck-footer" },
+    {
+      _el("p", {
+        [© #datetime.today().year()]
+        if meta.at("author", default: none) != none [ #meta.author]
+        if meta.at("homepage", default: none) != none {
+          [ · ]
+          _el("a", attrs: (href: meta.homepage), meta.homepage.trim("https://", at: start).trim("/", at: end))
+        }
+      })
+      _el("p", class: "ck-footer__colophon")[Set in Fraunces, Newsreader and DM Mono. Made with Typst.]
+    },
+  )
 }
 
 /// Marks one chapter. In print it does nothing; in the site it becomes its own
@@ -598,8 +752,13 @@
     note-counter.update(0)
     _el("header", class: "ck-chapter", {
       if it.numbering != none {
-        _el("p", class: "ck-chapter__kicker",
-          _el("span", class: "label")[Chapter] + [ ] + _el("span", class: "ck-chapter__numeral", context counter(heading).display("1")))
+        _el(
+          "p",
+          class: "ck-chapter__kicker",
+          _el("span", class: "label")[Chapter]
+            + [ ]
+            + _el("span", class: "ck-chapter__numeral", context counter(heading).display("1")),
+        )
       }
       _el("h1", class: "chapter-title", it.body)
     })
@@ -610,10 +769,13 @@
   })
   show heading.where(level: 3): it => _el("h3", class: "subsection-title", it.body)
 
-  set math.equation(numbering: (..n) => {
-    let chapter = counter(heading).get().first()
-    numbering("(1.1)", chapter, ..n)
-  }, supplement: [Equation])
+  set math.equation(
+    numbering: (..n) => {
+      let chapter = counter(heading).get().first()
+      numbering("(1.1)", chapter, ..n)
+    },
+    supplement: [Equation],
+  )
   show math.equation.where(block: true): it => {
     if it.numbering == none {
       it
@@ -621,7 +783,11 @@
       counter(math.equation).update(v => v - 1)
       _el("div", class: "ck-equation", math.equation(it.body, block: true, numbering: none))
     } else {
-      _el("div", class: "ck-equation", it + _el("div", class: "ck-equation__number", context counter(math.equation).display(it.numbering)))
+      _el(
+        "div",
+        class: "ck-equation",
+        it + _el("div", class: "ck-equation__number", context counter(math.equation).display(it.numbering)),
+      )
     }
   }
 
@@ -667,7 +833,8 @@
 #let _paged-rules(body, justify: true) = {
   // Page: two-sided, margin column on the outside.
   set page(
-    width: page-grid.width, height: page-grid.height,
+    width: page-grid.width,
+    height: page-grid.height,
     margin: if _print {
       (inside: page-grid.inside, outside: outside, top: page-grid.top, bottom: page-grid.bottom)
     } else {
@@ -684,7 +851,10 @@
       if before.len() == 0 { return }
       let ch = before.last()
       let head = label-text({
-        if ch.numbering != none { str(counter(heading).at(ch.location()).first()); h(0.6em) }
+        if ch.numbering != none {
+          str(counter(heading).at(ch.location()).first())
+          h(0.6em)
+        }
         ch.body
       })
       align(if not _print or calc.odd(p) { right } else { left }, head)
@@ -699,8 +869,13 @@
 
   // Text: Newsreader, 1em line boxes so leading sets an exact baseline grid.
   set text(
-    font: fonts.text, size: type-size.body, fill: palette.ink, lang: "en",
-    top-edge: 0.8em, bottom-edge: -0.2em, hyphenate: justify,
+    font: fonts.text,
+    size: type-size.body,
+    fill: palette.ink,
+    lang: "en",
+    top-edge: 0.8em,
+    bottom-edge: -0.2em,
+    hyphenate: justify,
   )
   set par(leading: _lead(type-size.body, line-height.body), spacing: spacing.s4, justify: justify)
   show strong: set text(weight: 600)
@@ -728,8 +903,15 @@
       if it.numbering != none {
         label-text[Chapter]
         v(spacing.s2, weak: true)
-        text(font: fonts.display, weight: 500, size: type-size.chapter-numeral, fill: palette.coral,
-          top-edge: "cap-height", bottom-edge: "baseline", context counter(heading).display("1"))
+        text(
+          font: fonts.display,
+          weight: 500,
+          size: type-size.chapter-numeral,
+          fill: palette.coral,
+          top-edge: "cap-height",
+          bottom-edge: "baseline",
+          context counter(heading).display("1"),
+        )
         v(spacing.s8, weak: true)
       }
       block(width: 88%, {
@@ -743,7 +925,10 @@
   show heading.where(level: 2): it => block(above: spacing.s12, below: spacing.s4, sticky: true, {
     set text(font: fonts.display, weight: 600, size: type-size.section)
     set par(leading: _lead(type-size.section, line-height.section))
-    if it.numbering != none { context counter(heading).display(); h(0.5em) }
+    if it.numbering != none {
+      context counter(heading).display()
+      h(0.5em)
+    }
     it.body
   })
 
@@ -755,10 +940,13 @@
   // Math: STIX Two Math, a step above the text. Only labelled equations get a
   // number, as (chapter.n).
   show math.equation: set text(font: fonts.math, size: 1.06em)
-  set math.equation(numbering: (..n) => {
-    let chapter = counter(heading).get().first()
-    numbering("(1.1)", chapter, ..n)
-  }, supplement: [Equation])
+  set math.equation(
+    numbering: (..n) => {
+      let chapter = counter(heading).get().first()
+      numbering("(1.1)", chapter, ..n)
+    },
+    supplement: [Equation],
+  )
   show math.equation.where(block: true): it => {
     if it.numbering != none and not it.has("label") {
       counter(math.equation).update(v => v - 1)
@@ -774,14 +962,23 @@
   show raw.where(block: true): it => context {
     if _in-code.get() { it } else {
       block(
-        width: 100%, above: spacing.s8, below: spacing.s8, inset: (x: spacing.s6, y: spacing.s4),
-        fill: palette.paper-warm, radius: radii.m, it,
+        width: 100%,
+        above: spacing.s8,
+        below: spacing.s8,
+        inset: (x: spacing.s6, y: spacing.s4),
+        fill: palette.paper-warm,
+        radius: radii.m,
+        it,
       )
     }
   }
   show raw.where(block: false): set text(size: 0.86 * type-size.body)
   show raw.where(block: false): it => box(
-    fill: palette.paper-warm, radius: radii.s, inset: (x: 1.5pt), outset: (y: 2pt), it,
+    fill: palette.paper-warm,
+    radius: radii.s,
+    inset: (x: 1.5pt),
+    outset: (y: 2pt),
+    it,
   )
 
   // Figures, listings and tables: numbered per chapter, caption below,
@@ -841,41 +1038,53 @@
 // ── The template ─────────────────────────────────────────────────────────────
 
 #let _web-fonts = (
-  "Fraunces-Variable.woff2", "Newsreader-Variable.woff2", "Newsreader-Italic-Variable.woff2",
-  "DMMono-Regular.woff2", "DMMono-Italic.woff2", "DMMono-Medium.woff2", "STIXTwoMath-Regular.woff2",
+  "Fraunces-Variable.woff2",
+  "Newsreader-Variable.woff2",
+  "Newsreader-Italic-Variable.woff2",
+  "DMMono-Regular.woff2",
+  "DMMono-Italic.woff2",
+  "DMMono-Medium.woff2",
+  "STIXTwoMath-Regular.woff2",
 )
 
 #let book(
   title: none,
   subtitle: none,
   author: none,
-  logo: none,         // the image's bytes: read("assets/captain-craken.png", encoding: none)
-  contents: true,     // table of contents after the title page / on the site's home page
-  justify: true,      // print: justified and hyphenated; false for ragged right
-  pdf: none,          // site only: link to a PDF you copy into the site, e.g. "book.pdf"
-  description: none,  // site only: what the book is, opening the letter on the home page
-  note: auto,         // site only: the letter "To the reader" (auto: the default; none: no letter)
-  series: none,       // site only: a line above the title, e.g. "A Captain Craken book"
-  frontispiece: [Captain Craken, who will keep you company.],  // site only: caption under the logo
-  homepage: none,     // site only: your website, linked in the footer
+  logo: none, // the image's bytes: read("assets/captain-craken.png", encoding: none)
+  contents: true, // table of contents after the title page / on the site's home page
+  justify: true, // print: justified and hyphenated; false for ragged right
+  pdf: none, // site only: link to a PDF you copy into the site, e.g. "book.pdf"
+  description: none, // site only: what the book is, opening the letter on the home page
+  note: auto, // site only: the letter "To the reader" (auto: the default; none: no letter)
+  series: none, // site only: a line above the title, e.g. "A Captain Craken book"
+  frontispiece: [Captain Craken, who will keep you company.], // site only: caption under the logo
+  homepage: none, // site only: your website, linked in the footer
   body,
 ) = {
   set document(title: title, author: if author != none { author } else { () })
   // The logo arrives as bytes (a package can't read your project's files);
   // its type is told by its first bytes, for its file name on the site.
   let logo-src = if logo != none {
-    let ext = if logo.slice(0, 4) == bytes((0x89, 0x50, 0x4E, 0x47)) { "png" }
-      else if logo.at(0) == 0xFF { "jpg" }
-      else if logo.at(0) == 0x3C { "svg" }
-      else if logo.slice(0, 4) == bytes("GIF8") { "gif" }
-      else if logo.slice(0, 4) == bytes("RIFF") { "webp" }
-      else { "png" }
+    let ext = if logo.slice(0, 4) == bytes((0x89, 0x50, 0x4E, 0x47)) { "png" } else if logo.at(0) == 0xFF {
+      "jpg"
+    } else if logo.at(0) == 0x3C { "svg" } else if logo.slice(0, 4) == bytes("GIF8") { "gif" } else if (
+      logo.slice(0, 4) == bytes("RIFF")
+    ) { "webp" } else { "png" }
     "assets/logo." + ext
   }
   let meta = (
-    title: title, subtitle: subtitle, author: author, logo-src: logo-src, pdf: pdf,
-    description: description, note: note, series: series, frontispiece: frontispiece,
-    homepage: homepage, contents: contents,
+    title: title,
+    subtitle: subtitle,
+    author: author,
+    logo-src: logo-src,
+    pdf: pdf,
+    description: description,
+    note: note,
+    series: series,
+    frontispiece: frontispiece,
+    homepage: homepage,
+    contents: contents,
   )
 
   context {
