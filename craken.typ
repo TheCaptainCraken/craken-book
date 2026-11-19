@@ -234,11 +234,6 @@
 
 // ── Callouts: Tip, Question, Try this ────────────────────────────────────────
 
-#let solution-store = state("craken-solutions", ())
-#let _in-callout = state("craken-in-callout", false)
-// Code on paper-warm, or on paper inside a callout (which is paper-warm). Needs context.
-#let _code-fill() = if _in-callout.get() { palette.paper } else { palette.paper-warm }
-#let answer-counter = counter("craken-answer")
 
 // The answer under a question, set upside-down at the foot of the box (print).
 #let _answer-flipped(answer) = {
@@ -254,26 +249,38 @@
   }))
 }
 
+// Chapter range helpers: the part of the book from the last chapter heading
+// before `loc` to the next one after it. Locations, not counters, so the
+// answers and solutions settle in as few layout passes as possible.
+#let _after-chapter-start(sel, loc) = {
+  let prev = query(heading.where(level: 1).before(loc))
+  if prev.len() > 0 { sel.after(prev.last().location()) } else { sel }
+}
+#let _before-chapter-end(sel, loc) = {
+  let next = query(heading.where(level: 1).after(loc, inclusive: false))
+  if next.len() > 0 { sel.before(next.first().location()) } else { sel }
+}
+
 // A4 edition: nobody turns a screen upside-down, so the answer moves to the
 // chapter's solutions and the question links to it (and back).
-#let _answer-linked(answer) = {
-  answer-counter.step()
-  context {
-    let n = answer-counter.get().first()
-    let there = label("craken-answer-" + str(n))
-    [#metadata("question") #label("craken-question-" + str(n))]
-    let chapter = counter(heading).get().first()
-    let collected = query(<craken-solutions-here>).any(m => m.value.all or m.value.chapter == chapter)
-    if not collected { return _answer-flipped(answer) } // no solutions() for this chapter
-    solution-store.update(all => all + ((chapter: chapter, kind: "answer", num: n, body: answer),))
-    v(spacing.s4, weak: true)
-    set text(size: type-size.caption, fill: palette.ink-soft)
-    label-text(fill: palette.rust)[Answer]
-    h(spacing.s2)
-    // the page is known from the second layout pass on
-    let page = if query(there).len() > 0 { str(locate(there).page()) } else { "…" }
-    link(there)[on page #page]
-  }
+#let _answer-linked(answer) = context {
+  let me = here()
+  // Record the answer whatever happens, so solutions() never waits on the
+  // check below.
+  [#metadata((kind: "answer", body: answer, question: me))<craken-solution>]
+  let here-on = _before-chapter-end(selector(<craken-solutions-here>).after(me), me)
+  let collected = query(here-on).len() > 0 or query(<craken-solutions-here>).any(m => m.value.all)
+  if not collected { return _answer-flipped(answer) } // no solutions() for this chapter
+  v(spacing.s4, weak: true)
+  set text(size: type-size.caption, fill: palette.ink-soft)
+  label-text(fill: palette.rust)[Answer]
+  h(spacing.s2)
+  // the answer's page is known from the second layout pass on
+  let found = query(<craken-answer-here>).filter(m => m.value == me)
+  if found.len() > 0 {
+    let there = found.first().location()
+    link(there)[on page #there.page()]
+  } else [on page …]
 }
 
 #let _callout(body, kind, name, color, answer: none) = context {
@@ -301,12 +308,15 @@
       {
         label-text(fill: color)[#_sucker-paged(color, 6.5pt, true, 0.9pt) #h(spacing.s2) #name]
         v(spacing.s2, weak: true)
-        _in-callout.update(true)
+        // Code sits on paper-warm; inside a callout (paper-warm too) it moves
+        // to paper. Show-set rules, not state: state costs layout passes.
+        show <craken-code-box>: set block(fill: palette.paper)
+        show raw.where(block: true): set block(fill: palette.paper)
+        show raw.where(block: false): set box(fill: palette.paper)
         body
         if answer != none {
           if _print { _answer-flipped(answer) } else { _answer-linked(answer) }
         }
-        _in-callout.update(false)
       },
     )
   }
@@ -385,11 +395,10 @@
     }
     it
   }
-  block(
+  [#block(
     width: 100%,
     above: spacing.s8,
     below: spacing.s8,
-    fill: _code-fill(),
     radius: radii.m,
     clip: true,
     breakable: true,
@@ -412,12 +421,12 @@
       }
       block(width: 100%, inset: (x: spacing.s6, y: spacing.s4), spacing: 0pt, {
         set align(start)
-        _in-code.update(true)
+        // the code box is drawn here, so the code block itself goes bare
+        show raw.where(block: true): set block(fill: none, inset: 0pt, radius: 0pt, above: 0pt, below: 0pt)
         body
-        _in-code.update(false)
       })
     },
-  )
+  )<craken-code-box>]
 }
 
 /// A numbered listing ("Listing 1.2") with a caption: code() inside a figure.
@@ -493,7 +502,7 @@
       },
     )
     if solution != none {
-      solution-store.update(all => all + ((chapter: chapter, num: num, body: solution),))
+      [#metadata((kind: "exercise", num: num, body: solution))<craken-solution>]
     }
   },
 )
@@ -509,21 +518,22 @@
 /// every chapter). Web: nothing, as solutions sit under their exercises.
 #let solutions(all: false, title: [Solutions]) = context {
   if _web() { return }
-  let chapter = counter(heading).get().first()
-  [#metadata((chapter: chapter, all: all)) <craken-solutions-here>]
-  let items = solution-store.final().filter(s => all or s.chapter == chapter)
+  let me = here()
+  [#metadata((all: all))<craken-solutions-here>]
+  let sel = selector(<craken-solution>).before(me)
+  if not all { sel = _after-chapter-start(sel, me) }
+  let items = query(sel).map(m => m.value)
   if title != none and items.len() > 0 { heading(level: 2, numbering: none, title) }
   for s in items {
-    if s.at("kind", default: "exercise") == "answer" {
-      let back = label("craken-question-" + str(s.num))
-      [#block(above: spacing.s6, below: spacing.s6, breakable: true, {
+    if s.kind == "answer" {
+      [#metadata(s.question)<craken-answer-here>]
+      block(above: spacing.s6, below: spacing.s6, breakable: true, {
           label-text(fill: palette.rust)[Answer]
           h(spacing.s2)
-          let page = if query(back).len() > 0 { str(locate(back).page()) } else { "…" }
-          text(size: type-size.caption, fill: palette.ink-soft, link(back)[to the question on page #page])
+          text(size: type-size.caption, fill: palette.ink-soft, link(s.question)[to the question on page #s.question.page()])
           v(spacing.s2, weak: true)
           s.body
-        }) #label("craken-answer-" + str(s.num))]
+        })
     } else {
       block(above: spacing.s6, below: spacing.s6, breakable: true, {
         label-text(fill: palette.moss)[Solution #s.num]
@@ -1024,22 +1034,18 @@
   set raw(theme: "themes/craken-" + theme + ".tmTheme")
   show raw: set text(font: fonts.mono, size: type-size.code, fill: palette.ink, hyphenate: false)
   show raw.where(block: true): set par(leading: _lead(type-size.code, line-height.code), justify: false)
-  show raw.where(block: true): it => context {
-    if _in-code.get() { it } else {
-      block(
-        width: 100%,
-        above: spacing.s8,
-        below: spacing.s8,
-        inset: (x: spacing.s6, y: spacing.s4),
-        fill: _code-fill(),
-        radius: radii.m,
-        it,
-      )
-    }
-  }
+  show raw.where(block: true): set block(
+    width: 100%,
+    above: spacing.s8,
+    below: spacing.s8,
+    inset: (x: spacing.s6, y: spacing.s4),
+    fill: palette.paper-warm,
+    radius: radii.m,
+  )
+  show <craken-code-box>: set block(fill: palette.paper-warm)
   show raw.where(block: false): set text(size: 0.86 * type-size.body)
-  show raw.where(block: false): it => context box(
-    fill: _code-fill(),
+  show raw.where(block: false): set box(fill: palette.paper-warm)
+  show raw.where(block: false): it => box(
     radius: radii.s,
     inset: (x: 1.5pt),
     outset: (y: 2pt),
