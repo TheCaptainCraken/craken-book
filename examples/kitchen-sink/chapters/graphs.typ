@@ -13,7 +13,8 @@ There are three common ways to store a graph:
 - an *adjacency matrix*, an $n times n$ table of zeros and ones;
 - an *adjacency list*, one list of neighbours per vertex;
   - sorted, for fast lookups,
-  - or unsorted, for fast inserts;
+  - or unsorted, for fast inserts,
+    - (a third level, to check its marker);
 - an *edge list*, just the pairs.
 
 To walk a graph, we:

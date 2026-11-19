@@ -711,23 +711,22 @@ body { margin: 0; background: var(--paper); }
 .ck-book li { margin: 0; }
 .ck-book li > p { margin: 0; }
 .ck-book li > ul, .ck-book li > ol { margin: 0; }
-/* Bullets are the sucker: coral, then an open ring, then a small dot */
+/* Bullets: a plain coral dot (no ring: the ring is the callouts' sucker),
+   then a short dash, then a small dot, both ink-soft */
 .ck-book ul { list-style: none; }
 .ck-book ul > li { position: relative; }
 .ck-book ul > li::before {
   content: "";
   position: absolute;
-  left: calc(-1 * var(--space-6) + 2px);
-  top: calc(0.5lh - 5px);
-  box-sizing: border-box;
-  width: 10px;
-  height: 10px;
-  border: 1.5px solid var(--coral);
+  left: calc(-1 * var(--space-6) + 3px);
+  top: calc(0.5lh - 4px);
+  width: 7px;
+  height: 7px;
   border-radius: var(--radius-pill);
-  background: radial-gradient(circle, var(--coral) 0 1.8px, transparent 2.3px);
+  background: var(--coral);
 }
-.ck-book ul ul > li::before { border-color: var(--ink-soft); background: none; }
-.ck-book ul ul ul > li::before { width: 5px; height: 5px; left: calc(-1 * var(--space-6) + 4px); top: calc(0.5lh - 2px); border: 0; background: var(--ink-soft); }
+.ck-book ul ul > li::before { width: 8px; height: 1.5px; top: calc(0.5lh - 1px); border-radius: 1px; background: var(--ink-soft); }
+.ck-book ul ul ul > li::before { width: 4px; height: 4px; top: calc(0.5lh - 2px); border-radius: var(--radius-pill); }
 /* Numbered lists: label-face numerals in rust */
 .ck-book ol > li::marker {
   color: var(--rust);

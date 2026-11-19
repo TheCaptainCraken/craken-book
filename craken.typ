@@ -1025,13 +1025,15 @@
   set footnote.entry(separator: none, clearance: spacing.s8)
   show link: set text(fill: palette.rust)
   show ref: it => if _print { it } else { text(fill: palette.rust, it) }
-  // Lists: the sucker for bullets (coral, then an open ring, then a dot),
+  // Lists: a plain coral dot (no ring, so it can't be mistaken for the
+  // sucker on callouts), then a short dash, then a small dot, both ink-soft;
   // label-face numerals in rust for numbered lists.
+  let dot(r, fill) = box(width: 2 * r, height: 0.5em, baseline: 0pt, place(left + horizon, circle(radius: r, fill: fill)))
   set list(
     marker: (
-      _sucker-paged(palette.coral, 5.5pt, true, 0.85pt),
-      _sucker-paged(palette.ink-soft, 5pt, false, 0.75pt),
-      box(width: 5pt, height: 5pt, baseline: 0.05em, place(center + horizon, circle(radius: 1.25pt, fill: palette.ink-soft))),
+      dot(2.1pt, palette.coral),
+      box(width: 5pt, height: 0.5em, place(left + horizon, line(length: 5pt, stroke: 0.9pt + palette.ink-soft))),
+      dot(1.3pt, palette.ink-soft),
     ),
     indent: 0pt,
     body-indent: spacing.s4,

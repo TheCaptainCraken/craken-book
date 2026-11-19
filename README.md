@@ -117,7 +117,7 @@ The site's home page is the front of a book, built for you:
 | `#figure(…, caption: […])` | Figure or table, numbered per chapter | Same; drawings become inline SVG |
 | `#exercises[ #exercise(difficulty: 2, solution: […])[…] <ex:name> ]` | Rated 1–3, between hairlines | Solution hidden under each exercise |
 | `#solutions()` | “Solutions” section for this chapter (with the A4 answers) | Nothing (they're under the exercises) |
-| `- item`, `+ item` | Sucker bullets (coral, then open rings); numbers in rust | Same |
+| `- item`, `+ item` | Coral dot bullets (then a dash, then a small dot); numbers in rust | Same |
 | `#sbreak()` | Three suckers | Same |
 | `#part[…]` (in `book.typ`) | Part title page, listed in the contents | Heading in the home page's contents; banner on its first chapter |
 | `#footnote[…]` | At the foot of the page | Listed at the end of the chapter |
