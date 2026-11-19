@@ -178,7 +178,7 @@
 
 /* ---------- Part banner, over a part's first chapter ---------- */
 
-.ck-part { padding: var(--space-24) 0 var(--space-12); border-bottom: 1px solid var(--rule); }
+.ck-part { padding: var(--space-24) 0 0; }
 .ck-part + .ck-chapter { padding-top: var(--space-12); }
 .ck-part__kicker { display: flex; flex-direction: column; gap: var(--space-1); margin: 0; color: var(--ink-soft); }
 .ck-part__numeral {
@@ -317,8 +317,7 @@
   justify-content: space-between;
   gap: var(--space-4);
   margin: 0;
-  padding: var(--space-2) var(--space-6);
-  border-bottom: 1px solid var(--rule);
+  padding: var(--space-4) var(--space-6) 0;
   color: var(--ink-soft);
 }
 .ck-code pre {
@@ -392,8 +391,7 @@
 /* ---------- Exercises ---------- */
 
 .ck-exercises { margin: var(--space-8) 0; }
-.ck-exercise { padding: var(--space-6) 0; border-top: 1px solid var(--rule); }
-.ck-exercise:last-child { border-bottom: 1px solid var(--rule); }
+.ck-exercise { padding: var(--space-4) 0; }
 .ck-exercise__head {
   display: flex;
   align-items: center;
@@ -422,7 +420,6 @@ body { margin: 0; background: var(--paper); }
   margin: 0 auto;
   padding: var(--space-4) var(--space-12);
   font-size: 18px;
-  border-bottom: 1px solid var(--rule);
 }
 .ck-topbar a { color: var(--ink); text-decoration: none; }
 .ck-topbar a:hover { color: var(--rust); }
@@ -459,7 +456,6 @@ body { margin: 0; background: var(--paper); }
   max-width: var(--measure);
   margin: 0 auto;
   padding: var(--space-8) calc(var(--gutter) + var(--margin-column) + var(--space-12)) var(--space-24) var(--space-12);
-  border-top: 1px solid var(--rule);
   font-size: 18px;
 }
 .ck-pager > a, .ck-pager > span { max-width: 45%; }
@@ -659,7 +655,7 @@ body { margin: 0; background: var(--paper); }
 .ck-contents__sections .ck-section-num { color: var(--ink-soft); margin-right: 0.3em; }
 .ck-contents__dot, .ck-contents__count { color: var(--ink-soft); }
 /* Parts: a heading in the contents, over their chapters */
-.ck-book .ck-contents__list > li.ck-contents__part { display: block; margin: var(--space-12) 0 var(--space-8) 64px; padding-top: var(--space-6); border-top: 1px solid var(--rule); }
+.ck-book .ck-contents__list > li.ck-contents__part { display: block; margin: var(--space-24) 0 var(--space-8) 64px; }
 .ck-book .ck-contents__list > li.ck-contents__part:first-child { margin-top: 0; }
 .ck-contents__part-num { display: block; color: var(--rust); }
 .ck-book .ck-contents__part-name {
@@ -698,7 +694,6 @@ body { margin: 0; background: var(--paper); }
 .ck-topbar.ck-topbar--wide, .ck-footer.ck-footer--wide { max-width: 1040px; }
 .ck-footer {
   max-width: calc(var(--measure) + var(--gutter) + var(--margin-column)); margin: 0 auto; padding: var(--space-8) var(--space-12) var(--space-12);
-  border-top: 1px solid var(--rule);
   color: var(--ink-soft); font-family: var(--font-text); font-size: 18px;
 }
 .ck-footer p { margin: 0 0 var(--space-1); font-size: 15px; line-height: 23px; }
@@ -730,7 +725,7 @@ body { margin: 0; background: var(--paper); }
 
 body > section[role="doc-endnotes"] { display: none; }
 /* Footnotes: collected at the end of the chapter, above the pager */
-.ck-footnotes { margin-top: var(--space-12); padding-top: var(--space-4); border-top: 1px solid var(--rule); color: var(--ink-soft); }
+.ck-footnotes { margin-top: var(--space-12); color: var(--ink-soft); }
 .ck-book .ck-footnotes ol { list-style: none; padding: 0; margin: 0; }
 .ck-footnotes li { margin: 0 0 var(--space-1); }
 .ck-footnotes__num, .ck-fn-ref { font-variant-numeric: lining-nums; }
@@ -742,7 +737,6 @@ body > section[role="doc-endnotes"] { display: none; }
   border-collapse: collapse;
   width: 100%;
   font-variant-numeric: tabular-nums lining-nums;
-  border-top: 1px solid var(--ink-soft);
 }
 .ck-book thead tr { border-bottom: 1px solid var(--ink-soft); }
 .ck-book th {
@@ -753,7 +747,7 @@ body > section[role="doc-endnotes"] { display: none; }
   color: var(--ink-soft);
   text-align: inherit;
 }
-.ck-book td, .ck-book th { padding: var(--space-2) var(--space-4); border-bottom: 1px solid var(--rule); }
+.ck-book td, .ck-book th { padding: var(--space-2) var(--space-4); }
 .ck-book td:not(:first-child), .ck-book th:not(:first-child) { text-align: right; }
 /* Tables keep their natural width (centred in a figure) unless a column is
    fractional; cells follow the alignment given in Typst. */

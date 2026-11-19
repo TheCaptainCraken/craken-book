@@ -237,9 +237,7 @@
 
 // The answer under a question, set upside-down at the foot of the box (print).
 #let _answer-flipped(answer) = {
-  v(spacing.s4, weak: true)
-  line(length: 100%, stroke: 0.5pt + palette.rule)
-  v(spacing.s2, weak: true)
+  v(spacing.s6, weak: true)
   rotate(180deg, reflow: true, block(width: 100%, {
     set text(size: type-size.caption, fill: palette.ink-soft)
     set par(leading: _lead(type-size.caption, line-height.caption), justify: false)
@@ -406,8 +404,7 @@
       if title != none or lang != none {
         block(
           width: 100%,
-          inset: (x: spacing.s6, y: spacing.s2),
-          stroke: (bottom: 0.5pt + palette.rule),
+          inset: (x: spacing.s6, top: spacing.s4, bottom: 0pt),
           spacing: 0pt,
           sticky: true,
           {
@@ -489,8 +486,7 @@
       width: 100%,
       above: 0pt,
       below: 0pt,
-      inset: (y: spacing.s6),
-      stroke: (top: 0.5pt + palette.rule),
+      inset: (y: spacing.s4),
       breakable: true,
       {
         set align(start)
@@ -507,10 +503,10 @@
   },
 )
 
-/// Wraps a run of exercises so the last one gets a closing hairline.
+/// Wraps a run of exercises.
 #let exercises(body) = context {
   if _web() { _el("div", class: "ck-exercises", body) } else {
-    block(width: 100%, above: spacing.s8, below: spacing.s8, stroke: (bottom: 0.5pt + palette.rule), body)
+    block(width: 100%, above: spacing.s8, below: spacing.s8, body)
   }
 }
 
@@ -1026,6 +1022,7 @@
   )
   set par(leading: _lead(type-size.body, line-height.body), spacing: spacing.s4, justify: justify)
   show strong: set text(weight: 600)
+  set footnote.entry(separator: none, clearance: spacing.s8)
   show link: set text(fill: palette.rust)
   show ref: it => if _print { it } else { text(fill: palette.rust, it) }
   set list(marker: text(fill: palette.ink-soft)[–], indent: 0pt, body-indent: spacing.s4)
@@ -1173,7 +1170,7 @@
   // Tables: hairlines, no boxes, tabular figures.
   set table(
     align: (x, _) => if x == 0 { start } else { end },
-    stroke: (x, y) => (top: if y <= 1 { 0.5pt + palette.ink-soft } else { 0pt }, bottom: 0.5pt + palette.rule),
+    stroke: (_, y) => if y == 0 { (bottom: 0.5pt + palette.ink-soft) } else { none },
     inset: (x: spacing.s4, y: spacing.s2 + 1pt),
   )
   show table: set text(number-type: "lining", number-width: "tabular")
