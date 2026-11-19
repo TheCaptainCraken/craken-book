@@ -69,11 +69,14 @@ Website output is still experimental in Typst, and the Typst web app can't build
 #show: book.with(
   title: [...], subtitle: [...], author: "...",
   logo: read("assets/captain-craken.png", encoding: none),   // read here, so the package can use it
+  cover: read("assets/cover.jpg", encoding: none),   // title page picture (leave out: the logo; none: no picture)
+  cover-alt: "...",              // site: what the cover shows, for screen readers
+  cover-width: 80mm,             // PDF: the cover's width (default 54mm, print 44mm)
   pdf: "book.pdf",               // site: the "Download the PDF" tab
   description: [...],            // site: opens the letter to the reader
   homepage: "https://...",       // site: imprint line and footer
   series: [A Captain Craken book],   // site: a line above the title
-  frontispiece: [...],           // site: caption under the logo
+  frontispiece: [...],           // site: caption under the cover
   note: auto,                    // site: the letter (auto, your own content, or none)
 )
 
@@ -95,7 +98,7 @@ In the PDFs a part gets its own title page (on a right-hand page in print) and a
 
 The site's home page is the front of a book, built for you:
 
-- **An open book.** On the left page is your logo as a framed frontispiece with its caption. On the right is the title page, set centred: series line, title, subtitle, author and imprint. Two index tabs stick up from the top edge of the right page, "Read online" and "Download the PDF".
+- **An open book.** On the left page is your cover picture (the logo unless you pass `cover`) as a framed frontispiece with its caption. Any shape of picture fits. On the right is the title page, set centred: series line, title, subtitle, author and imprint. Two index tabs stick up from the top edge of the right page, "Read online" and "Download the PDF".
 - **A letter to the reader.** It opens with a drop cap and your `description`, then explains Tips, Questions, Try this and exercise ratings in running text, and is signed with your name. Pass `note: [...]` to write your own letter.
 - **Contents,** set like a contents page. Each chapter shows its coral number, title, its `#lede` in italic, its sections and its exercise count. Parts, if the book has them, head their chapters.
 
@@ -114,6 +117,7 @@ The site's home page is the front of a book, built for you:
 | `#figure(…, caption: […])` | Figure or table, numbered per chapter | Same; drawings become inline SVG |
 | `#exercises[ #exercise(difficulty: 2, solution: […])[…] <ex:name> ]` | Rated 1–3, between hairlines | Solution hidden under each exercise |
 | `#solutions()` | “Solutions” section for this chapter (with the A4 answers) | Nothing (they're under the exercises) |
+| `- item`, `+ item` | Sucker bullets (coral, then open rings); numbers in rust | Same |
 | `#sbreak()` | Three suckers | Same |
 | `#part[…]` (in `book.typ`) | Part title page, listed in the contents | Heading in the home page's contents; banner on its first chapter |
 | `#footnote[…]` | At the foot of the page | Listed at the end of the chapter |

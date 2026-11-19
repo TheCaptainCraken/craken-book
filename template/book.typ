@@ -5,6 +5,10 @@
   subtitle: [A friendly walk through functions that call themselves],
   author: "Pietro Agnoli",
   logo: read("assets/captain-craken.png", encoding: none),
+  // The title page's picture. Leave it out to use the logo, or pass your own:
+  //   cover: read("assets/cover.jpg", encoding: none),
+  cover-alt: "Captain Craken, half pirate and half kraken",
+  frontispiece: [Captain Craken, who will keep you company.],
   pdf: "book.pdf",   // site only: copy book.pdf into the site folder
   description: [
     Recursion is the idea that a problem can be solved by trusting a smaller copy of itself. It shows up everywhere in computer science, and it feels like magic until it suddenly doesn't.

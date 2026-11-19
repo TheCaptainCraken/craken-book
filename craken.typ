@@ -631,11 +631,11 @@
   //    with index tabs on the right page's top edge as the two ways in.
   _el("div", class: "ck-desk", _el("section", class: "ck-spread", {
     _el("div", class: "ck-spread__verso", {
-      if meta.logo-src != none {
+      if meta.cover-src != none {
         _el("figure", class: "ck-frontis", {
           _el("div", class: "ck-frontis__plate", _el("img", attrs: (
-            src: meta.logo-src,
-            alt: "Captain Craken, half pirate and half kraken",
+            src: meta.cover-src,
+            alt: meta.cover-alt,
           )))
           if meta.frontispiece != none { _el("figcaption", class: "ck-frontis__caption caption", meta.frontispiece) }
         })
@@ -1025,8 +1025,22 @@
   set footnote.entry(separator: none, clearance: spacing.s8)
   show link: set text(fill: palette.rust)
   show ref: it => if _print { it } else { text(fill: palette.rust, it) }
-  set list(marker: text(fill: palette.ink-soft)[–], indent: 0pt, body-indent: spacing.s4)
-  set enum(indent: 0pt, body-indent: spacing.s4)
+  // Lists: the sucker for bullets (coral, then an open ring, then a dot),
+  // label-face numerals in rust for numbered lists.
+  set list(
+    marker: (
+      _sucker-paged(palette.coral, 5.5pt, true, 0.85pt),
+      _sucker-paged(palette.ink-soft, 5pt, false, 0.75pt),
+      box(width: 5pt, height: 5pt, baseline: 0.05em, place(center + horizon, circle(radius: 1.25pt, fill: palette.ink-soft))),
+    ),
+    indent: 0pt,
+    body-indent: spacing.s4,
+  )
+  set enum(
+    numbering: n => text(font: fonts.label, weight: 600, fill: palette.rust, number-type: "lining", str(n) + "."),
+    indent: 0pt,
+    body-indent: spacing.s4,
+  )
 
   // Headings: chapters (level 1), sections (2), subsections (3).
   set heading(numbering: "1.1")
@@ -1197,14 +1211,21 @@
   body
 }
 
-#let _paged-titlepage(title, subtitle, author, logo) = page(header: none, footer: none, {
+#let _paged-titlepage(title, subtitle, author, cover, cover-width, is-logo) = page(header: none, footer: none, {
   set par(justify: false)
   set text(hyphenate: false)
   v(1fr)
-  if logo != none {
-    let mark = box(width: if _print { 44mm } else { 54mm }, image(logo))
+  if cover != none {
+    let width = if cover-width != auto { cover-width } else if _print { 44mm } else { 54mm }
+    let mark = box(width: width, image(cover, width: 100%))
+    // On Lantern the picture keeps its paper ground: a disc for the round
+    // logo, a card for any other cover.
     if theme == "lantern" {
-      mark = circle(radius: 28mm, fill: palettes.paper.paper, inset: 0pt, align(center + horizon, mark))
+      mark = if is-logo {
+        circle(radius: 28mm, fill: palettes.paper.paper, inset: 0pt, align(center + horizon, mark))
+      } else {
+        box(fill: palettes.paper.paper, inset: 4mm, radius: radii.m, mark)
+      }
     }
     mark
     v(spacing.s12)
@@ -1234,33 +1255,39 @@
   title: none,
   subtitle: none,
   author: none,
-  logo: none, // the image's bytes: read("assets/captain-craken.png", encoding: none)
+  logo: none, // the image's bytes: read("assets/captain-craken.png", encoding: none); site: top bar
+  cover: auto, // the title page's picture (bytes, like logo); auto: the logo; none: no picture
+  cover-alt: "", // site: what the cover shows, for screen readers ("" if it is decoration)
+  cover-width: auto, // PDF: the cover's width on the title page (auto: 54mm A4, 44mm print)
   contents: true, // table of contents after the title page / on the site's home page
   justify: true, // print: justified and hyphenated; false for ragged right
   pdf: none, // site only: link to a PDF you copy into the site, e.g. "book.pdf"
   description: none, // site only: what the book is, opening the letter on the home page
   note: auto, // site only: the letter "To the reader" (auto: the default; none: no letter)
   series: none, // site only: a line above the title, e.g. "A Captain Craken book"
-  frontispiece: [Captain Craken, who will keep you company.], // site only: caption under the logo
+  frontispiece: none, // site only: caption under the cover picture
   homepage: none, // site only: your website, linked in the footer
   body,
 ) = {
   set document(title: title, author: if author != none { author } else { () })
   // The logo arrives as bytes (a package can't read your project's files);
   // its type is told by its first bytes, for its file name on the site.
-  let logo-src = if logo != none {
-    let ext = if logo.slice(0, 4) == bytes((0x89, 0x50, 0x4E, 0x47)) { "png" } else if logo.at(0) == 0xFF {
-      "jpg"
-    } else if logo.at(0) == 0x3C { "svg" } else if logo.slice(0, 4) == bytes("GIF8") { "gif" } else if (
-      logo.slice(0, 4) == bytes("RIFF")
-    ) { "webp" } else { "png" }
-    "assets/logo." + ext
-  }
+  let ext(img) = if img.slice(0, 4) == bytes((0x89, 0x50, 0x4E, 0x47)) { "png" } else if img.at(0) == 0xFF {
+    "jpg"
+  } else if img.at(0) == 0x3C { "svg" } else if img.slice(0, 4) == bytes("GIF8") { "gif" } else if (
+    img.slice(0, 4) == bytes("RIFF")
+  ) { "webp" } else { "png" }
+  let logo-src = if logo != none { "assets/logo." + ext(logo) }
+  let is-logo = cover == auto
+  let cover = if cover == auto { logo } else { cover }
+  let cover-src = if cover == none { none } else if is-logo { logo-src } else { "assets/cover." + ext(cover) }
   let meta = (
     title: title,
     subtitle: subtitle,
     author: author,
     logo-src: logo-src,
+    cover-src: cover-src,
+    cover-alt: cover-alt,
     pdf: pdf,
     description: description,
     note: note,
@@ -1278,6 +1305,7 @@
       asset("craken.js", read("web/craken.js"))
       for f in _web-fonts { asset("fonts/" + f, read("web/fonts/" + f, encoding: none)) }
       if logo != none { asset(logo-src, logo) }
+      if cover != none and not is-logo { asset(cover-src, cover) }
       document("index.html", title: title, _web-rules({
         _el("script", attrs: (src: "craken.js"))
         html.link(rel: "stylesheet", href: "craken.css")
@@ -1300,7 +1328,7 @@
       })
     } else {
       _paged-rules(justify: justify, {
-        if title != none { _paged-titlepage(title, subtitle, author, logo) }
+        if title != none { _paged-titlepage(title, subtitle, author, cover, cover-width, is-logo) }
         if contents { outline(depth: 2, target: heading.where(outlined: true).or(figure.where(kind: "craken-part"))) }
         body
       })
