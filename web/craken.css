@@ -663,13 +663,35 @@ body { margin: 0; background: var(--paper); }
 @media (max-width: 760px) {
   .ck-footer { padding: var(--space-6); }
 }
-}
 
 /* ---------- Typst output inside the book ---------- */
 
 .ck-book ul, .ck-book ol { padding-left: var(--space-6); margin: 0 0 var(--space-4); }
-.ck-book li { margin: 0 0 var(--space-1); }
+.ck-book li { margin: 0; }
+.ck-book li > p { margin: 0; }
+.ck-book li > ul, .ck-book li > ol { margin: 0; }
 .ck-book ul > li::marker { color: var(--ink-soft); content: "– "; }
+
+/* Term lists, as in the PDF: the term in semibold, its text running on */
+.ck-book dl { margin: 0 0 var(--space-4); padding-left: 2em; }
+.ck-book dt { float: left; clear: left; margin: 0 0.6em 0 -2em; font-weight: 600; }
+.ck-book dd { margin: 0; }
+.ck-book dd::after { content: ""; display: block; clear: left; }
+
+/* Block quotes: indented, attribution set flush right */
+.ck-book .ck-quote { margin: var(--space-6) 0; padding: 0 var(--space-6); }
+.ck-book .ck-quote > p { margin: 0; }
+.ck-book .ck-quote .ck-quote__attribution { margin-top: var(--space-2); text-align: right; }
+
+body > section[role="doc-endnotes"] { display: none; }
+/* Footnotes: collected at the end of the chapter, above the pager */
+.ck-footnotes { margin-top: var(--space-12); padding-top: var(--space-4); border-top: 1px solid var(--rule); color: var(--ink-soft); }
+.ck-book .ck-footnotes ol { list-style: none; padding: 0; margin: 0; }
+.ck-footnotes li { margin: 0 0 var(--space-1); }
+.ck-footnotes__num, .ck-fn-ref { font-variant-numeric: lining-nums; }
+.ck-fn-ref { font-size: 0.68em; line-height: 0; vertical-align: super; margin-left: 1px; }
+.ck-book .ck-fn-ref a, .ck-book .ck-footnotes__num { text-decoration: none; }
+.ck-footnotes__num { margin-right: var(--space-1); font-size: 0.75em; vertical-align: super; line-height: 0; }
 
 .ck-book table {
   border-collapse: collapse;
@@ -688,6 +710,15 @@ body { margin: 0; background: var(--paper); }
 }
 .ck-book td, .ck-book th { padding: var(--space-2) var(--space-4); border-bottom: 1px solid var(--rule); }
 .ck-book td:not(:first-child), .ck-book th:not(:first-child) { text-align: right; }
+/* Tables keep their natural width (centred in a figure) unless a column is
+   fractional; cells follow the alignment given in Typst. */
+.ck-table { max-width: 100%; overflow-x: auto; }
+.ck-table > table { width: auto; margin: 0 auto; }
+.ck-table--full, .ck-table--full > table { width: 100%; }
+.ck-align { display: block; }
+.ck-align--left { text-align: left; }
+.ck-align--center { text-align: center; }
+.ck-align--right { text-align: right; }
 
 .ck-section-num { margin-right: 0.5em; }
 .ck-book h1[id], .ck-book h2[id], .ck-book h3[id] { scroll-margin-top: var(--space-8); }
@@ -712,10 +743,14 @@ body { margin: 0; background: var(--paper); }
 
 /* Equations: Typst's MathML inside the design system's equation grid */
 .ck-equation > math { overflow-x: auto; }
-math { math-style: normal; }
+/* Inline math is set compact (small fractions, limits beside sums), as in the PDF */
+math { math-style: compact; }
+math[display="block"] { math-style: normal; }
 
 /* Typst writes <pre><code> without the type-style class */
-.ck-code pre { font-family: var(--font-mono); font-size: 15px; line-height: 24px; }
+.ck-code pre { font-family: var(--font-mono); font-size: 15px; line-height: 24px; white-space: pre-wrap; overflow-wrap: anywhere; }
+/* Inside a callout, code sits on paper so it stands out, as in the PDF */
+.ck-callout .ck-code { background: var(--paper); }
 .ck-code pre strong { font-weight: 500; }
 .ck-figure > .ck-figure__art > .ck-code { margin: 0; width: 100%; }
 .ck-figure__art { width: 100%; box-sizing: border-box; }

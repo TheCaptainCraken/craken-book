@@ -235,6 +235,9 @@
 // ── Callouts: Tip, Question, Try this ────────────────────────────────────────
 
 #let solution-store = state("craken-solutions", ())
+#let _in-callout = state("craken-in-callout", false)
+// Code on paper-warm, or on paper inside a callout (which is paper-warm). Needs context.
+#let _code-fill() = if _in-callout.get() { palette.paper } else { palette.paper-warm }
 #let answer-counter = counter("craken-answer")
 
 // The answer under a question, set upside-down at the foot of the box (print).
@@ -298,10 +301,12 @@
       {
         label-text(fill: color)[#_sucker-paged(color, 6.5pt, true, 0.9pt) #h(spacing.s2) #name]
         v(spacing.s2, weak: true)
+        _in-callout.update(true)
         body
         if answer != none {
           if _print { _answer-flipped(answer) } else { _answer-linked(answer) }
         }
+        _in-callout.update(false)
       },
     )
   }
@@ -384,7 +389,7 @@
     width: 100%,
     above: spacing.s8,
     below: spacing.s8,
-    fill: palette.paper-warm,
+    fill: _code-fill(),
     radius: radii.m,
     clip: true,
     breakable: true,
@@ -721,6 +726,22 @@
   )
 }
 
+/// The footnotes of a web page, listed at the end of its text.
+#let _footnotes(notes) = if notes.len() > 0 {
+  _el("section", class: "ck-footnotes caption", attrs: (role: "doc-endnotes"), _el("ol", {
+    for f in notes {
+      let k = str(counter(footnote).at(f.location()).first())
+      _el("li", attrs: (id: "fn-" + k), {
+        _el("a", class: "ck-footnotes__num", attrs: (href: "#fnref-" + k, role: "doc-backlink"), numbering(
+          f.numbering,
+          ..counter(footnote).at(f.location()),
+        ))
+        f.body
+      })
+    }
+  }))
+}
+
 /// Marks one chapter. In print it does nothing; in the site it becomes its own
 /// page, `<slug>.html`.
 #let chapter(slug, body) = context {
@@ -731,7 +752,13 @@
     _el("script", attrs: (src: "craken.js"))
     html.link(rel: "stylesheet", href: "craken.css")
     _topbar()
-    _el("main", class: "ck-page ck-book body", body)
+    _el("main", class: "ck-page ck-book body", {
+      body
+      context {
+        let k = _chapter-counter.get()
+        _footnotes(query(footnote).filter(f => _chapter-counter.at(f.location()) == k))
+      }
+    })
     _pager()
     _footer()
   })
@@ -793,6 +820,44 @@
 
   show raw.where(block: true): it => context {
     if _in-code.get() { it } else { _el("figure", class: "ck-code", it) }
+  }
+
+  // Block quotes: the attribution set flush right, as in the PDF.
+  show quote.where(block: true): it => _el("blockquote", class: "ck-quote", {
+    _el("p", it.body)
+    if it.attribution != none {
+      let who = if type(it.attribution) == label { cite(it.attribution) } else { it.attribution }
+      _el("p", class: "ck-quote__attribution")[— #who]
+    }
+  })
+
+  // Footnotes: a numbered link here; the notes are listed at the end of the
+  // chapter (see chapter()), not after the page footer.
+  show footnote: it => context {
+    let n = counter(footnote).display(it.numbering)
+    let k = str(counter(footnote).get().first())
+    _el("sup", class: "ck-fn-ref", attrs: (id: "fnref-" + k), _el("a", attrs: (href: "#fn-" + k), n))
+  }
+  // Typst still writes its own (now empty) endnotes after the page; the
+  // stylesheet hides them.
+  show footnote.entry: none
+
+  // Tables: natural width unless a column is fractional; cells keep the
+  // alignment given in Typst (the stylesheet's default otherwise).
+  show table: it => {
+    let cols = if type(it.columns) == array { it.columns } else { () }
+    let full = cols.any(c => type(c) == fraction)
+    _el("div", class: if full { "ck-table ck-table--full" } else { "ck-table" }, it)
+  }
+  show table.cell: it => {
+    let a = it.align
+    let x = if type(a) == alignment {
+      if a.axis() == "horizontal" { a } else if a.axis() == none { a.x } else { none }
+    } else { none }
+    let name = if x == left or x == start { "left" } else if x == right or x == end { "right" } else if x == center {
+      "center"
+    } else { none }
+    if name == none { it.body } else { _el("span", class: "ck-align ck-align--" + name, it.body) }
   }
 
   set figure(numbering: (..n) => {
@@ -966,15 +1031,15 @@
         above: spacing.s8,
         below: spacing.s8,
         inset: (x: spacing.s6, y: spacing.s4),
-        fill: palette.paper-warm,
+        fill: _code-fill(),
         radius: radii.m,
         it,
       )
     }
   }
   show raw.where(block: false): set text(size: 0.86 * type-size.body)
-  show raw.where(block: false): it => box(
-    fill: palette.paper-warm,
+  show raw.where(block: false): it => context box(
+    fill: _code-fill(),
     radius: radii.s,
     inset: (x: 1.5pt),
     outset: (y: 2pt),
@@ -1001,6 +1066,7 @@
 
   // Tables: hairlines, no boxes, tabular figures.
   set table(
+    align: (x, _) => if x == 0 { start } else { end },
     stroke: (x, y) => (top: if y <= 1 { 0.5pt + palette.ink-soft } else { 0pt }, bottom: 0.5pt + palette.rule),
     inset: (x: spacing.s4, y: spacing.s2 + 1pt),
   )
@@ -1112,7 +1178,7 @@
         html.link(rel: "stylesheet", href: "web/craken.css")
         _topbar()
         _el("main", class: "ck-home ck-book body", _home(meta))
-        _el("main", class: "ck-page ck-book body", body)
+        _el("main", class: "ck-page ck-book body", body + context _footnotes(query(footnote)))
         _footer()
       })
     } else {
