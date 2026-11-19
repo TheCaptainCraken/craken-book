@@ -606,7 +606,8 @@
 /// The letter on the home page when book(note: auto): what the book is, how it
 /// talks to you, signed by the author.
 #let _default-note(meta) = {
-  if meta.description != none { meta.description }
+  // a div, so a one-paragraph description (no <p> of its own) keeps its spacing
+  if meta.description != none { _el("div", class: "ck-letter__description", meta.description) }
   par[
     The book talks to you in a few ways. A #_mark("tip", [Tip]) is a trick worth keeping.
     A #_mark("question", [Question]) asks you to stop and answer before you read on; the answer waits behind a toggle.
@@ -682,7 +683,19 @@
     _el("section", class: "ck-contents", {
       _el("h2", class: "ck-contents__title")[Contents]
       _el("ol", class: "ck-contents__list", {
+        let parts = query(<craken-part>)
+        let shown = 0
         for (i, ch) in chapters.enumerate() {
+          // the parts that open before this chapter, each listed once
+          let k = query(selector(<craken-part>).before(ch.location())).len()
+          for j in range(shown, k) {
+            let p = parts.at(j)
+            _el("li", class: "ck-contents__part", {
+              _el("span", class: "ck-contents__part-num label")[Part #numbering("I", j + 1)]
+              _el("h3", class: "ck-contents__part-name", link(chapters.at(i).location(), p.value.title))
+            })
+          }
+          shown = calc.max(shown, k)
           let sections = between(heading.where(level: 2), i)
           let exercises = between(figure.where(kind: "exercise"), i).len()
           let ledes = between(selector(<craken-lede>), i)
@@ -752,6 +765,33 @@
   }))
 }
 
+/// Opens a part: a group of chapters. Chapters keep their numbers across parts.
+/// PDF: a part title page (on a right-hand page in print), listed in the
+/// contents. Web: a heading in the home page's contents, and a banner on the
+/// part's first chapter. Put it between chapters in book.typ:
+///   #part[Foundations]
+///   #chapter("recursion", include "chapters/recursion.typ")
+#let part(title, intro: none) = {
+  [#metadata((title: title, intro: intro))<craken-part>]
+  context {
+    if _web() or _site() { return }
+    [#metadata("part")<craken-chapter-end>]
+    pagebreak(weak: true, to: if _print { "odd" } else { none })
+    v(1fr)
+    figure(
+      kind: "craken-part",
+      supplement: [Part],
+      numbering: "I",
+      caption: title,
+      outlined: true,
+      intro,
+    )
+    v(2fr)
+    [#metadata("part")<craken-chapter-end>]
+    pagebreak(weak: true)
+  }
+}
+
 /// Marks one chapter. In print it does nothing; in the site it becomes its own
 /// page, `<slug>.html`.
 #let chapter(slug, body) = context {
@@ -787,6 +827,23 @@
     counter(figure.where(kind: table)).update(0)
     counter(figure.where(kind: "exercise")).update(0)
     note-counter.update(0)
+    // The first chapter of a part opens with the part's banner.
+    context {
+      let parts = query(selector(<craken-part>).before(here()))
+      if parts.len() == 0 { return }
+      let p = parts.last()
+      let between = query(heading.where(level: 1).after(p.location()).before(it.location(), inclusive: false))
+      if between.len() > 0 { return }
+      _el("section", class: "ck-part", {
+        _el("p", class: "ck-part__kicker", _el("span", class: "label")[Part] + [ ] + _el(
+          "span",
+          class: "ck-part__numeral",
+          numbering("I", parts.len()),
+        ))
+        _el("h2", class: "ck-part__title", p.value.title)
+        if p.value.intro != none { _el("div", class: "ck-part__intro lede", p.value.intro) }
+      })
+    }
     _el("header", class: "ck-chapter", {
       if it.numbering != none {
         _el(
@@ -898,11 +955,26 @@
 
 // ── Print rules (PDF) ────────────────────────────────────────────────────────
 
-// Pages left empty by `pagebreak(to: "odd")` before a chapter get no header or folio.
+// Pages left empty by `pagebreak(to: "odd")` before a chapter or a part get no
+// header or folio. Chapters and parts drop a <craken-chapter-end> marker where
+// the text before them ends; a page is blank if it falls after the last such
+// marker and before the next opener. A marker at the very top of a page marks
+// nothing (the page was already empty), so it doesn't count.
 #let _is-blank(p) = {
-  let starts = query(heading.where(level: 1)).map(it => it.location().page())
-  let ends = query(<craken-chapter-end>).map(it => it.location().page())
-  range(calc.min(starts.len(), ends.len())).any(i => ends.at(i) < p and p < starts.at(i))
+  let openers = (
+    query(heading.where(level: 1)).map(it => it.location().page())
+      + query(figure.where(kind: "craken-part")).map(it => it.location().page())
+  )
+  if p in query(figure.where(kind: "craken-part")).map(it => it.location().page()) { return true }
+  let next = openers.filter(s => s > p)
+  if next.len() == 0 { return false }
+  let s = calc.min(..next)
+  let ends = query(<craken-chapter-end>)
+    .map(it => it.location().position())
+    .filter(pos => pos.page < s and pos.y > page-grid.top + 1pt)
+    .map(pos => pos.page)
+  let e = if ends.len() > 0 { calc.max(..ends) } else { 0 }
+  e < p
 }
 
 #let _paged-rules(body, justify: true) = {
@@ -1061,6 +1133,34 @@
   show figure: set block(above: spacing.s8, below: spacing.s8)
   show figure.where(kind: "exercise"): set block(above: 0pt, below: 0pt, breakable: true)
   show figure.where(kind: "exercise"): it => it.body
+  show figure.where(kind: "craken-part"): it => block(width: 100%, {
+    set align(start)
+    label-text(it.supplement)
+    v(spacing.s2, weak: true)
+    text(
+      font: fonts.display,
+      weight: 500,
+      size: type-size.chapter-numeral,
+      fill: palette.coral,
+      top-edge: "cap-height",
+      bottom-edge: "baseline",
+      it.counter.display(it.numbering),
+    )
+    v(spacing.s8, weak: true)
+    block(width: 88%, {
+      set text(font: fonts.display, weight: 600, size: type-size.chapter-title, hyphenate: false)
+      set par(leading: _lead(type-size.chapter-title, line-height.chapter-title), justify: false)
+      it.caption.body
+    })
+    if it.body != none and it.body != [] {
+      v(spacing.s8, weak: true)
+      block(width: 88%, {
+        set text(size: type-size.lede)
+        set par(leading: _lead(type-size.lede, line-height.lede), justify: false)
+        it.body
+      })
+    }
+  })
   show figure.caption: it => block(width: 100%, above: spacing.s4, {
     set align(start)
     set text(size: type-size.caption, fill: palette.ink-soft)
@@ -1080,6 +1180,20 @@
   show table.cell.where(y: 0): set text(font: fonts.label, weight: 600, size: type-size.label, fill: palette.ink-soft)
 
   // Table of contents.
+  show outline.entry: it => {
+    let el = it.element
+    if el.func() != figure or el.kind != "craken-part" { return it }
+    block(above: spacing.s12, below: spacing.s4, link(el.location(), {
+      set text(fill: palette.ink)
+      label-text(fill: palette.rust)[#el.supplement #numbering(el.numbering, ..el.counter.at(el.location()))]
+      h(0.6em)
+      text(font: fonts.display, weight: 600, size: type-size.subsection, el.caption.body)
+      h(0.4em)
+      box(width: 1fr, repeat(gap: 0.25em)[.])
+      h(0.4em)
+      text(font: fonts.label, weight: 600, it.page())
+    }))
+  }
   show outline.entry.where(level: 1): set text(font: fonts.label, weight: 600)
   show outline.entry.where(level: 1): set block(above: spacing.s6)
 
@@ -1190,7 +1304,7 @@
     } else {
       _paged-rules(justify: justify, {
         if title != none { _paged-titlepage(title, subtitle, author, logo) }
-        if contents { outline(depth: 2) }
+        if contents { outline(depth: 2, target: heading.where(outlined: true).or(figure.where(kind: "craken-part"))) }
         body
       })
     }

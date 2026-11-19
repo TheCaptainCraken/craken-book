@@ -17,6 +17,9 @@
   series: [A Captain Craken test book],
 )
 
+#part[Structures and algorithms]
 #chapter("graphs", include "chapters/graphs.typ")
 #chapter("sorting", include "chapters/sorting.typ")
+
+#part(intro: [A part can open with a few words of its own, set like a lede.])[Chance]
 #chapter("probability", include "chapters/probability.typ")
