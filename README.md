@@ -19,21 +19,21 @@ unzip craken-typst-template.zip && cd craken
 
 The script does two things:
 
-- **The package:** it copies the template to `~/.local/share/typst/packages/local/craken/0.1.0/` (on macOS, `~/Library/Application Support/typst/packages/local/craken/0.1.0/`).
+- **The package:** it copies the template to `~/.local/share/typst/packages/local/craken/0.2.0/` (on macOS, `~/Library/Application Support/typst/packages/local/craken/0.2.0/`).
 - **The fonts:** it installs them for your user, so you never need `--font-path`.
 
 Run it again whenever you update the template.
 
-On Windows, copy the folder to `%APPDATA%\typst\packages\local\craken\0.1.0\` and install the `.ttf` files in `fonts\` by double-clicking them.
+On Windows, copy the folder to `%APPDATA%\typst\packages\local\craken\0.2.0\` and install the `.ttf` files in `fonts\` by double-clicking them.
 
 ## Start a book
 
 ```sh
-typst init @local/craken:0.1.0 my-book
+typst init @local/craken:0.2.0 my-book
 cd my-book
 ```
 
-This gives you `book.typ`, a `chapters/` folder with two sample chapters, and `assets/` with the logo. Every file starts with `#import "@local/craken:0.1.0": *`.
+This gives you `book.typ`, a `chapters/` folder with two sample chapters, and `assets/` with the logo. Every file starts with `#import "@local/craken:0.2.0": *`.
 
 ## Build
 
@@ -80,11 +80,24 @@ Website output is still experimental in Typst, and the Typst web app can't build
 #chapter("recursion", include "chapters/recursion.typ")   // → recursion.html
 ```
 
+A longer book can be divided into parts. Put `#part[…]` before the first chapter of each part; chapters keep their numbers across parts:
+
+```typst
+#part[Foundations]
+#chapter("recursion", include "chapters/recursion.typ")
+#chapter("divide-and-conquer", include "chapters/divide-and-conquer.typ")
+
+#part(intro: [A few words that open the part.])[Going further]
+#chapter("dynamic-programming", include "chapters/dynamic-programming.typ")
+```
+
+In the PDFs a part gets its own title page (on a right-hand page in print) and a line in the contents above its chapters. On the site it heads its chapters in the home page's contents, and a part banner opens its first chapter.
+
 The site's home page is the front of a book, built for you:
 
 - **An open book.** On the left page is your logo as a framed frontispiece with its caption. On the right is the title page, set centred: series line, title, subtitle, author and imprint. Two index tabs stick up from the top edge of the right page, "Read online" and "Download the PDF".
 - **A letter to the reader.** It opens with a drop cap and your `description`, then explains Tips, Questions, Try this and exercise ratings in running text, and is signed with your name. Pass `note: [...]` to write your own letter.
-- **Contents,** set like a contents page. Each chapter shows its coral number, title, its `#lede` in italic, its sections and its exercise count.
+- **Contents,** set like a contents page. Each chapter shows its coral number, title, its `#lede` in italic, its sections and its exercise count. Parts, if the book has them, head their chapters.
 
 | You write | PDF | Web |
 | --- | --- | --- |
@@ -102,6 +115,8 @@ The site's home page is the front of a book, built for you:
 | `#exercises[ #exercise(difficulty: 2, solution: […])[…] <ex:name> ]` | Rated 1–3, between hairlines | Solution hidden under each exercise |
 | `#solutions()` | “Solutions” section for this chapter (with the A4 answers) | Nothing (they're under the exercises) |
 | `#sbreak()` | Three suckers | Same |
+| `#part[…]` (in `book.typ`) | Part title page, listed in the contents | Heading in the home page's contents; banner on its first chapter |
+| `#footnote[…]` | At the foot of the page | Listed at the end of the chapter |
 
 `@labels` work across chapters in both editions: on the web they link to the right page.
 
@@ -109,6 +124,7 @@ The site's home page is the front of a book, built for you:
 
 - `craken.typ`: the template, all three editions. `typst.toml` makes the folder a Typst package.
 - `template/`: what `typst init` copies into a new book.
+- `examples/kitchen-sink/`: a test book that uses every feature (parts, footnotes, lists, quotes, tables, notes, answers in several chapters…), for checking that the PDF and the site still match after a change. Build it like a book, from its folder.
 - `web/`: the site's stylesheet (`craken.css`, with the design system's tokens and `ck-*` components), its script (`craken.js`) and web fonts.
 - `fonts/`: PDF fonts made for Typst (Fraunces Soft, Newsreader Text, DM Mono, STIX Two Math), all under the SIL Open Font License. They cover Latin, accents included.
 - `themes/`: syntax colours for code in the PDFs and on the web.

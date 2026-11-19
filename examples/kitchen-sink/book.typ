@@ -2,7 +2,7 @@
 // content a real book uses. Build it the same way as a book:
 //   typst compile book.typ
 //   typst compile --features bundle,html --format bundle book.typ site
-#import "@local/craken:0.1.0": *
+#import "@local/craken:0.2.0": *
 
 #show: book.with(
   title: [The Kitchen Sink],

@@ -6,7 +6,7 @@
 //    • web: a static site, one page per chapter, styled by web/craken.css,
 //      which carries the design system's tokens and ck-* components
 //
-//    typst init @local/craken:0.1.0 my-book          (after ./install.sh)
+//    typst init @local/craken:0.2.0 my-book          (after ./install.sh)
 //    typst compile book.typ                           (A4 PDF)
 //    typst compile --input edition=print book.typ book-print.pdf
 //    typst compile --input theme=lantern book.typ     (dark PDF)

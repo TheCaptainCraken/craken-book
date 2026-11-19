@@ -1,4 +1,4 @@
-#import "@local/craken:0.1.0": *
+#import "@local/craken:0.2.0": *
 
 = Divide and conquer
 
