@@ -1,4 +1,4 @@
-#import "@local/craken:0.2.0": *
+#import "@preview/craken-book:0.2.0": *
 
 = Sorting
 

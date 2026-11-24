@@ -6,7 +6,7 @@
 //    • web: a static site, one page per chapter, styled by web/craken.css,
 //      which carries the design system's tokens and ck-* components
 //
-//    typst init @local/craken:0.2.0 my-book          (after ./install.sh)
+//    typst init @preview/craken-book:0.2.0 my-book
 //    typst compile book.typ                           (A4 PDF)
 //    typst compile --input edition=print book.typ book-print.pdf
 //    typst compile --input theme=lantern book.typ     (dark PDF)
@@ -1243,15 +1243,10 @@
 
 // ── The template ─────────────────────────────────────────────────────────────
 
-#let _web-fonts = (
-  "Fraunces-Variable.woff2",
-  "Newsreader-Variable.woff2",
-  "Newsreader-Italic-Variable.woff2",
-  "DMMono-Regular.woff2",
-  "DMMono-Italic.woff2",
-  "DMMono-Medium.woff2",
-  "STIXTwoMath-Regular.woff2",
-)
+// Where the site's web fonts come from by default: this version's web/fonts
+// folder in the GitHub repository, served by jsDelivr. (Packages on Typst
+// Universe can't ship font files.)
+#let _web-fonts-cdn = "https://cdn.jsdelivr.net/gh/TheCaptainCraken/craken-book@v0.2.0/web/fonts/"
 
 #let book(
   title: none,
@@ -1269,6 +1264,7 @@
   series: none, // site only: a line above the title, e.g. "A Captain Craken book"
   frontispiece: none, // site only: caption under the cover picture
   homepage: none, // site only: your website, linked in the footer
+  web-fonts: auto, // site only: the folder URL the fonts load from; auto: a CDN; "fonts/": copy them into site/fonts/
   body,
 ) = {
   set document(title: title, author: if author != none { author } else { () })
@@ -1303,9 +1299,9 @@
     if _site() {
       // A multi-page site: assets, a home page, one page per chapter().
       _meta.update(meta)
-      asset("craken.css", read("web/craken.css"))
+      let font-base = if web-fonts == auto { _web-fonts-cdn } else { web-fonts }
+      asset("craken.css", read("web/craken.css").replace("url(\"fonts/", "url(\"" + font-base))
       asset("craken.js", read("web/craken.js"))
-      for f in _web-fonts { asset("fonts/" + f, read("web/fonts/" + f, encoding: none)) }
       if logo != none { asset(logo-src, logo) }
       if cover != none and not is-logo { asset(cover-src, cover) }
       document("index.html", title: title, _web-rules({

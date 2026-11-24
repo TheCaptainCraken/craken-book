@@ -1,4 +1,4 @@
-# Captain Craken: Typst book template
+# Captain Craken books
 
 One source, three editions of the same book, all in the Captain Craken design system:
 
@@ -8,32 +8,23 @@ One source, three editions of the same book, all in the Captain Craken design sy
 
 Any PDF can also use the dark Lantern theme. Tested with Typst 0.15.1.
 
-## Install
-
-Unzip, then run the install script once:
-
-```sh
-unzip craken-typst-template.zip && cd craken
-./install.sh
-```
-
-The script does two things:
-
-- **The package:** it copies the template to `~/.local/share/typst/packages/local/craken/0.2.0/` (on macOS, `~/Library/Application Support/typst/packages/local/craken/0.2.0/`).
-- **The fonts:** it installs them for your user, so you never need `--font-path`.
-
-Run it again whenever you update the template.
-
-On Windows, copy the folder to `%APPDATA%\typst\packages\local\craken\0.2.0\` and install the `.ttf` files in `fonts\` by double-clicking them.
-
 ## Start a book
 
 ```sh
-typst init @local/craken:0.2.0 my-book
+typst init @preview/craken-book:0.2.0 my-book
 cd my-book
 ```
 
-This gives you `book.typ`, a `chapters/` folder with two sample chapters, and `assets/` with the logo. Every file starts with `#import "@local/craken:0.2.0": *`.
+This gives you `book.typ` and a `chapters/` folder with two sample chapters. Every file starts with `#import "@preview/craken-book:0.2.0": *`. In the Typst web app, choose *Start from template* and search for `craken-book`.
+
+## Fonts
+
+The book is set in Fraunces Soft, Newsreader Text, DM Mono and STIX Two Math. Typst packages can't ship fonts, so download them once: [craken-book-fonts.zip](https://github.com/TheCaptainCraken/craken-book/releases/download/v0.2.0/craken-book-fonts.zip). They're all under the SIL Open Font License.
+
+- **On your computer:** install the `.ttf` files (double-click them, or copy them to `~/.local/share/fonts` on Linux). Or keep them in a folder and pass `--font-path path/to/fonts` to `typst compile` and `typst watch`.
+- **In the web app:** upload the `.ttf` files anywhere in your project. The web app picks them up.
+
+Without them the book still compiles, in Libertinus Serif, with a warning for each missing font.
 
 ## Build
 
@@ -59,7 +50,9 @@ typst watch --features bundle,html --format bundle book.typ site
 
 To publish, upload the `site/` folder to any static host: GitHub Pages, Netlify, Cloudflare Pages, or a folder under your own domain.
 
-Website output is still experimental in Typst, and the Typst web app can't build the site or pass `--input`. To make the web app produce the print edition, change `default: "pdf"` to `default: "print"` on the `edition` line near the top of `craken.typ`.
+The site loads its web fonts from [jsDelivr](https://www.jsdelivr.com/), which serves this version's `web/fonts/` folder from the GitHub repository. To host them yourself, copy [`web/fonts/`](https://github.com/TheCaptainCraken/craken-book/tree/v0.2.0/web/fonts) into `site/fonts/` and pass `web-fonts: "fonts/"` to `book.with(…)`.
+
+Website output is still experimental in Typst. The Typst web app can't build the site or pass `--input`, so there it makes the A4 PDF in Paper; use the command line for the print edition, Lantern and the site.
 
 ## Write a book
 
@@ -68,7 +61,7 @@ Website output is still experimental in Typst, and the Typst web app can't build
 ```typst
 #show: book.with(
   title: [...], subtitle: [...], author: "...",
-  logo: read("assets/captain-craken.png", encoding: none),   // read here, so the package can use it
+  logo: read("assets/logo.png", encoding: none),   // your logo; read here, so the package can use it
   cover: read("assets/cover.jpg", encoding: none),   // title page picture (leave out: the logo; none: no picture)
   cover-alt: "...",              // site: what the cover shows, for screen readers
   cover-width: 80mm,             // PDF: the cover's width (default 54mm, print 44mm)
@@ -78,6 +71,7 @@ Website output is still experimental in Typst, and the Typst web app can't build
   series: [A Captain Craken book],   // site: a line above the title
   frontispiece: [...],           // site: caption under the cover
   note: auto,                    // site: the letter (auto, your own content, or none)
+  web-fonts: auto,               // site: where the fonts load from (auto: jsDelivr; "fonts/": your own copy)
 )
 
 #chapter("recursion", include "chapters/recursion.typ")   // → recursion.html
@@ -126,16 +120,23 @@ The site's home page is the front of a book, built for you:
 
 ## Files
 
-- `craken.typ`: the template, all three editions. `typst.toml` makes the folder a Typst package.
+- `craken.typ`: the template, all three editions.
 - `template/`: what `typst init` copies into a new book.
-- `examples/kitchen-sink/`: a test book that uses every feature (parts, footnotes, lists, quotes, tables, notes, answers in several chapters…), for checking that the PDF and the site still match after a change. Build it like a book, from its folder.
-- `web/`: the site's stylesheet (`craken.css`, with the design system's tokens and `ck-*` components), its script (`craken.js`) and web fonts.
-- `fonts/`: PDF fonts made for Typst (Fraunces Soft, Newsreader Text, DM Mono, STIX Two Math), all under the SIL Open Font License. They cover Latin, accents included.
+- `web/`: the site's stylesheet (`craken.css`, with the design system's tokens and `ck-*` components) and its script (`craken.js`).
 - `themes/`: syntax colours for code in the PDFs and on the web.
-- `install.sh`: installs the package and the fonts.
+
+The [GitHub repository](https://github.com/TheCaptainCraken/craken-book) also has:
+
+- `fonts/` (for the PDFs) and `web/fonts/` (for the site).
+- `examples/kitchen-sink/`: a test book that uses every feature (parts, footnotes, lists, quotes, tables, notes, answers in several chapters…), for checking that the PDF and the site still match after a change.
+- `install.sh`: installs the package and the fonts on Linux and macOS, for working offline.
 
 ## Notes
 
 - Drawings made with Typst shapes, like the call tree in chapter 1, appear on the web as SVG in Paper colours. On Lantern they sit on a paper-coloured card, like the logo.
 - In the PDFs, margin notes push each other down when they would overlap, but they never move to the next page, so keep them short.
 - PDF text is justified and hyphenated. Pass `justify: false` to `book.with(…)` for ragged right.
+
+## License
+
+The code and the starter files are under [MIT-0](LICENSE): use, change and share them however you like, no credit needed. The fonts are under the SIL Open Font License. The Captain Craken drawings in the repository's `examples/kitchen-sink/assets/` are © Pietro Agnoli, all rights reserved, and are not covered by MIT-0.
